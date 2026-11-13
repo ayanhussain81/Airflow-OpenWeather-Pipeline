@@ -37,6 +37,7 @@ jobs:
           script_stop: true
           script: |
             cd ~/Airflow-OpenWeather-Pipeline
+            sudo chown -R $(id -u):0 dags logs plugins config
             git pull origin main
             docker compose up -d --build
             docker compose ps
