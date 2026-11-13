@@ -65,23 +65,23 @@ def transform_load_data(task_instance):
     now = datetime.now()
     dt_string = now.strftime("%d%m%Y%H%M%S")
     file_name = f"current_weather_data_portland_{dt_string}.csv"
-    df_data.to_csv(f"s3://s3-openweather-api/{file_name}", index=False, storage_options=aws_credentials)
+    # df_data.to_csv(f"s3://s3-openweather-api/{file_name}", index=False, storage_options=aws_credentials)
 
     # ------------------ Save to PostgreSQL ------------------
-    postgres_hook = PostgresHook(postgres_conn_id='postgres_default')
-    insert_query = """
-        INSERT INTO weather_data (
-            city, description, temperature_f, feels_like_f,
-            min_temp_f, max_temp_f, pressure, humidity,
-            wind_speed, time_of_record, sunrise, sunset
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-    """
-    record_to_insert = (
-        city, weather_description, temp_farenheit, feels_like_farenheit,
-        min_temp_farenheit, max_temp_farenheit, pressure, humidity,
-        wind_speed, time_of_record, sunrise_time, sunset_time
-    )
-    postgres_hook.run(insert_query, parameters=record_to_insert)
+    # postgres_hook = PostgresHook(postgres_conn_id='postgres_default')
+    # insert_query = """
+    #     INSERT INTO weather_data (
+    #         city, description, temperature_f, feels_like_f,
+    #         min_temp_f, max_temp_f, pressure, humidity,
+    #         wind_speed, time_of_record, sunrise, sunset
+    #     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    # """
+    # record_to_insert = (
+    #     city, weather_description, temp_farenheit, feels_like_farenheit,
+    #     min_temp_farenheit, max_temp_farenheit, pressure, humidity,
+    #     wind_speed, time_of_record, sunrise_time, sunset_time
+    # )
+    # postgres_hook.run(insert_query, parameters=record_to_insert)
 
 
 # ---------- DAG Definition ----------
