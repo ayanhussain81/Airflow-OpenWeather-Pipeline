@@ -101,7 +101,7 @@ default_args = {
 with DAG(
     'weather_dag',
     default_args=default_args,
-    schedule='*/20 * * * *',
+    schedule='*/5 * * * *',
     catchup=False
 ) as dag:
 
