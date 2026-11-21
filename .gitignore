@@ -4,4 +4,4 @@ plugins/
 config/
 __pycache__/
 *.pem
-.github/workflows/
+.github/workflows/ci-cd copy.yml

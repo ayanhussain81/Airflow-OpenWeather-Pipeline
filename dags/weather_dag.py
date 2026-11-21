@@ -3,6 +3,7 @@ from datetime import timedelta, datetime
 from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.http.hooks.http import HttpHook
 from airflow.operators.python import PythonOperator
+from airflow.models import Variable
 import json
 import pandas as pd
 from airflow.providers.postgres.hooks.postgres import PostgresHook
@@ -14,9 +15,10 @@ def kelvin_to_fahrenheit(temp_in_kelvin):
 
 # ---------- Replace SimpleHttpOperator with this ----------
 def extract_weather_data(**context):
+    api_key = Variable.get('openweather_api_key')
     http_hook = HttpHook(method='GET', http_conn_id='weathermap_api')
     response = http_hook.run(
-        endpoint='/data/2.5/weather?q=Portland&APPID='
+        endpoint=f'/data/2.5/weather?q=Portland&APPID={api_key}'
     )
     data = response.json()
     context['ti'].xcom_push(key='weather_data', value=data)
@@ -99,14 +101,14 @@ default_args = {
 with DAG(
     'weather_dag',
     default_args=default_args,
-    schedule='*/15 * * * *',
+    schedule='*/20 * * * *',
     catchup=False
 ) as dag:
 
     is_weather_api_ready = HttpSensor(
         task_id='is_weather_api_ready',
         http_conn_id='weathermap_api',
-        endpoint='/data/2.5/weather?q=Portland&APPID='
+        endpoint='/data/2.5/weather?q=Portland&APPID={{ var.value.openweather_api_key }}'
     )
 
     extract_weather_data = PythonOperator(
